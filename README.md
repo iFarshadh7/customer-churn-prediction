@@ -1,93 +1,213 @@
+
 # Customer Churn Prediction
 
-## Project Overview
+![ML Project Tests](https://github.com/iFarshadh7/customer-churn-prediction/actions/workflows/tests.yml/badge.svg)
 
-This project predicts customer churn using machine learning.
-The goal is to identify customers who are likely to leave a
-telecommunications company.
+**An End-to-End Machine Learning Project for Predicting Customer Churn**
 
-## Dataset
+This project develops a machine learning solution to predict customer churn in the telecommunications industry. It covers data analysis, preprocessing, model development, evaluation, model interpretation, API development, and automated testing.
 
-IBM Telco Customer Churn Dataset
+---
 
-- 7,043 customer records
-- 21 columns
-- Target variable: Churn
+## 1. Project Overview
 
-## Project Workflow
+Customer churn occurs when customers stop using a company's services.
 
-1. Data Cleaning
-2. Exploratory Data Analysis
-3. Data Preprocessing
-4. Model Training
-5. Model Evaluation
-6. Threshold Optimization
-7. Model Interpretation
+The objective of this project is to identify customers who are likely to leave a telecommunications company using historical customer data.
 
-## Machine Learning Models
+**Business Goal:** Help businesses identify customers at risk of churn and support data-driven customer retention strategies.
 
-- Dummy Classifier
-- Logistic Regression
-- Random Forest
+## 2. Dataset
 
-The selected model is Logistic Regression.
+The project uses the **IBM Telco Customer Churn Dataset**.
 
-## Model Performance
+| Description | Value |
+|---|---:|
+| Total records | 7,043 |
+| Input features | 19 |
+| Target variable | `Churn` |
+| Problem type | Binary Classification |
 
-Test-set results with threshold = 0.35:
+The dataset includes customer demographics, account information, service subscriptions, contract types, and payment methods.
+
+Target encoding:
+
+- `No` → `0`
+- `Yes` → `1`
+
+## 3. Project Workflow
+
+The project follows an end-to-end machine learning workflow:
+
+1. **Exploratory Data Analysis (EDA)**
+   - Dataset inspection
+   - Missing value analysis
+   - Churn distribution analysis
+   - Customer segment analysis
+
+2. **Data Preprocessing**
+   - Data type correction
+   - Missing value handling
+   - Numerical feature scaling
+   - Categorical feature encoding
+
+3. **Model Development**
+   - Logistic Regression
+   - Scikit-learn Pipeline
+   - ColumnTransformer
+   - Stratified data splitting
+
+4. **Model Evaluation**
+   - Accuracy
+   - Precision
+   - Recall
+   - F1-score
+   - ROC-AUC
+   - Confusion Matrix
+
+5. **Model Interpretation**
+   - Logistic Regression coefficients
+   - Identification of important churn-related patterns
+
+6. **Deployment and Testing**
+   - Model serialization with Joblib
+   - Prediction module
+   - FastAPI REST API
+   - Pytest automated tests
+   - GitHub Actions CI
+
+## 4. Model Performance
+
+The final Logistic Regression model uses a classification threshold of **0.35**, selected based on validation-set F1-score.
 
 | Metric | Score |
 |---|---:|
-| Accuracy | 0.7644 |
-| Precision | 0.5432 |
-| Recall | 0.7059 |
-| F1-score | 0.6140 |
-| ROC-AUC | 0.8421 |
+| Accuracy | 76.44% |
+| Precision | 54.32% |
+| Recall | 70.59% |
+| F1-score | 61.40% |
+| ROC-AUC | 84.21% |
 
-## Confusion Matrix
+### Threshold Selection
 
-| | Predicted No Churn | Predicted Churn |
-|---|---:|---:|
-| Actual No Churn | 813 | 222 |
-| Actual Churn | 110 | 264 |
+The default classification threshold is 0.50. A threshold of 0.35 was selected to improve the balance between precision and recall based on validation results.
 
-## Key Findings
+This threshold increases the number of correctly identified churn customers, while also producing more false positives.
 
-- Customer tenure is an important predictive feature.
-- Month-to-month contracts are associated with higher churn.
-- Two-year contracts are associated with lower churn.
-- Fiber optic customers show higher churn rates.
+**Evaluation limitation:** The test set was consulted during earlier model experiments. Therefore, the reported test metrics are exploratory and should not be considered a final evaluation on a completely untouched holdout set.
 
-These findings represent associations, not causal relationships.
+## 5. Key Findings
 
-## Technologies
+Exploratory analysis and model interpretation revealed several patterns:
 
-- Python
-- Pandas
-- NumPy
-- Matplotlib
-- Seaborn
-- Scikit-learn
-- Joblib
-- Google Colab
+- Customers with month-to-month contracts had substantially higher churn rates.
+- Customers without online security and technical support services showed higher churn rates.
+- Customers using electronic check payments had higher observed churn rates.
+- Customer tenure was an important predictive feature.
 
-## Repository Structure
+These findings describe associations in the dataset and do not establish causation.
 
-- data/
-- notebooks/
-- models/
-- src/
-- tests/
+## 6. REST API
 
-## Future Improvements
+The trained model is integrated into a REST API using **FastAPI**.
 
-- FastAPI prediction API
-- Unit testing
-- Docker
-- GitHub Actions
+### Run Locally
 
-## Evaluation Note
+Install dependencies:
 
-The test set was consulted during earlier model comparisons
-and threshold exploration. Therefore, these metrics should be
-considered indicative rather than a fully untouched final evaluation.
+```bash
+pip install -r requirements.txt
+```
+
+Start the API from the project root:
+
+```bash
+uvicorn src.api:app --reload
+```
+
+Open the interactive API documentation:
+
+[http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+
+### Prediction Response
+
+The `/predict` endpoint returns:
+
+- Churn prediction (`Yes` or `No`)
+- Churn probability
+- Classification threshold
+
+## 7. Automated Testing and CI
+
+The project uses **Pytest** for automated testing.
+
+GitHub Actions automatically runs the test suite when code is pushed to the `main` branch or when a pull request is created.
+
+![GitHub Actions](https://github.com/iFarshadh7/customer-churn-prediction/actions/workflows/tests.yml/badge.svg)
+
+## 8. Project Structure
+
+```text
+customer-churn-prediction/
+│
+├── .github/
+│   └── workflows/
+│       └── tests.yml
+│
+├── data/
+│
+├── models/
+│   └── churn_model_bundle.joblib
+│
+├── notebooks/
+│   └── 01_customer_churn_eda.ipynb
+│
+├── src/
+│   ├── __init__.py
+│   ├── api.py
+│   └── predict.py
+│
+├── tests/
+│   └── test_predict.py
+│
+├── .gitignore
+├── README.md
+└── requirements.txt
+```
+
+## 9. Technologies
+
+| Category | Tools |
+|---|---|
+| Programming | Python |
+| Data Analysis | Pandas, NumPy |
+| Visualization | Matplotlib, Seaborn |
+| Machine Learning | Scikit-learn |
+| Model | Logistic Regression |
+| Model Serialization | Joblib |
+| API | FastAPI |
+| Testing | Pytest |
+| Version Control | Git, GitHub |
+| Continuous Integration | GitHub Actions |
+
+## 10. Future Improvements
+
+- Evaluate additional classification algorithms.
+- Perform hyperparameter tuning.
+- Apply cross-validation.
+- Evaluate the model on a completely untouched test set.
+- Explore SHAP for model explainability.
+- Deploy the API to a cloud platform.
+- Build an interactive churn monitoring dashboard.
+
+---
+
+## Author
+
+**Farshad**
+
+GitHub: [@iFarshadh7](https://github.com/iFarshadh7)
+
+---
+
+*Developed as a machine learning portfolio project demonstrating practical skills in data analysis, predictive modeling, model evaluation, API development, and automated testing.*
